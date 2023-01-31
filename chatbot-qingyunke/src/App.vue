@@ -24,7 +24,7 @@ const sendMsg = (msg) => {
   if (msg === "") return;
   addUserMsg(msg);
   //送文字給機器人API
-  proxy.$http.get("/api", {
+  proxy.$http.get("./api", {
     params: {
       key: "free",
       msg: msg
@@ -43,7 +43,7 @@ const sendMsg = (msg) => {
 }
 
 function translateToTaiwan(text) {
-  proxy.$http.get("/convert", {
+  proxy.$http.get("./convert", {
     params: {
       converter: "Taiwan",
       text: text

@@ -42,13 +42,13 @@ export default ({
         './api': {
           target: 'http://api.qingyunke.com/api.php',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, process.env.VITE_ROOT_PATH),
+          rewrite: (path) => path.replace(/^.\/api/, process.env.VITE_ROOT_PATH),
           secure: false
         },
         './convert': {
           target: 'http://api.zhconvert.org/convert',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/convert/, process.env.VITE_ROOT_PATH),
+          rewrite: (path) => path.replace(/^.\/convert/, process.env.VITE_ROOT_PATH),
           secure: false
         }
       }
