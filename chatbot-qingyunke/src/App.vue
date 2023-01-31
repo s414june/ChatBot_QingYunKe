@@ -9,7 +9,7 @@ let { proxy } = getCurrentInstance();
 const textList = ref([
   {
     isStart: true,
-    msg: "哈囉~跟我說說話吧",
+    msg: "哈囉~跟我說說話吧！",
     component: BotMsg,
   },
 ]);
@@ -18,7 +18,7 @@ const sendMsg = (msg) => {
   addUserMsg(msg);
   //送文字給機器人API
   proxy.$http
-    .get("./api", {
+    .get(import.meta.env.VITE_API_PATH, {
       params: {
         key: "free",
         msg: msg,
@@ -38,7 +38,7 @@ const sendMsg = (msg) => {
 
 function translateToTaiwan(text) {
   proxy.$http
-    .get("./convert", {
+    .get(import.meta.env.VITE_CONVERT_PATH, {
       params: {
         converter: "Taiwan",
         text: text,

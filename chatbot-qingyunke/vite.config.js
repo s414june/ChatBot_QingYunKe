@@ -39,17 +39,19 @@ export default ({
     plugins: [vue()],
     server: {
       proxy: {
-        './api': {
+        '/api': {
           target: 'http://api.qingyunke.com/api.php',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^.\/api/, ''),
-          secure: false
+          rewrite: (path) => path.replace(/^\/api/, ''),
+          secure: false,
+          ws: true
         },
-        './convert': {
+        '/convert': {
           target: 'http://api.zhconvert.org/convert',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^.\/convert/, ''),
-          secure: false
+          rewrite: (path) => path.replace(/^\/convert/, ''),
+          secure: false,
+          ws: true
         }
       }
     },
