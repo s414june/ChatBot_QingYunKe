@@ -42,7 +42,7 @@ export default ({
         './api': {
           target: 'http://api.qingyunke.com/api.php',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, process.env.ROOT_PATH),
+          rewrite: (path) => path.replace(/^\/api/, process.env.VITE_ROOT_PATH),
           secure: false
         },
         './convert': {
