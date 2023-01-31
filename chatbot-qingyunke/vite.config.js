@@ -48,11 +48,11 @@ export default ({
         './convert': {
           target: 'http://api.zhconvert.org/convert',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/convert/, process.env.ROOT_PATH),
+          rewrite: (path) => path.replace(/^\/convert/, process.env.VITE_ROOT_PATH),
           secure: false
         }
       }
     },
-    base: process.env.ROOT_PATH
+    base: process.env.VITE_ROOT_PATH
   });
 }
