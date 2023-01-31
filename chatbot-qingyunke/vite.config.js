@@ -12,11 +12,13 @@ export default defineConfig({
         target: 'http://api.qingyunke.com/api.php',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false
       },
       '/convert': {
         target: 'http://api.zhconvert.org/convert',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/convert/, ''),
+        secure: false
       }
     }
   },

@@ -21,8 +21,8 @@ defineProps({
                 {{ msg }}
             </div>
             <div class="absolute -top-2 right-4">
-                <div v-html="msgBefore" class="-scale-x-1 mt-4 w-4 fill-cyan-500 drop-shadow-ring-dark absolute"></div>
-                <div v-html="msgBefore" class="-scale-x-1 mt-4 w-4 fill-cyan-500 absolute z-10"></div>
+                <div v-html="msgBefore" class="-scale-x-1 mt-8 w-4 fill-cyan-500 drop-shadow-ring-dark absolute"></div>
+                <div v-html="msgBefore" class="-scale-x-1 mt-8 w-4 fill-cyan-500 absolute z-10"></div>
             </div>
         </div>
     </div>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 const isTyping = ref(false);
-let msg = "";
+const msg = ref("");
 const emit = defineEmits(['sendMsg']);
 function sendMsg() {
-  let thisMsg = msg;
-  msg = "";
+  let thisMsg = msg.value;
+  msg.value = "";
   emit('sendMsg', thisMsg);
 }
 const nowFontSizeIndex = ref(0);
