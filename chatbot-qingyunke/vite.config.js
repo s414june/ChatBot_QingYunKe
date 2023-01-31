@@ -12,7 +12,13 @@ export default defineConfig({
         target: 'http://api.qingyunke.com/api.php',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/convert': {
+        target: 'http://api.zhconvert.org/convert',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/convert/, ''),
       }
     }
-  }
+  },
+  base: '/ChatBot_QingYunKe/'
 })

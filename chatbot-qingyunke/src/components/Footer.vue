@@ -1,11 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 const isTyping = ref(false);
 let msg = "";
-const emit = defineEmits();
+const emit = defineEmits(['sendMsg']);
 function sendMsg() {
-  console.log(msg)
-  emit('sendMsg', msg);
+  let thisMsg = msg;
+  msg = "";
+  emit('sendMsg', thisMsg);
+}
+const nowFontSizeIndex = ref(0);
+const fontSizeList = [
+  "1rem",
+  "1.2rem",
+  "1.5rem",
+  "1.8rem"
+]
+function changeFontSize() {
+  if (nowFontSizeIndex.value >= fontSizeList.length - 1)
+    nowFontSizeIndex.value = 0;
+  else
+    nowFontSizeIndex.value++;
+  let nowStyleValue = fontSizeList[nowFontSizeIndex.value];
+  document.querySelector('body').setAttribute('style', 'font-size:' + nowStyleValue + ';');
 }
 </script>
 
@@ -22,13 +38,13 @@ function sendMsg() {
       px-3
       items-center
     ">
-    <div class="ml-2" v-show="!isTyping">
-      <img src="../assets/font-size-selfdesign.svg" alt="字體大小變化" class="w-6" />
+    <div v-show="!isTyping">
+      <img src="../assets/font-size-selfdesign.svg" alt="字體大小變化" class="w-6" @click="changeFontSize()" />
     </div>
-    <div class="ml-2" v-show="isTyping" @click="isTyping = false">
+    <div v-show="isTyping" @click="isTyping = false">
       <img src="../assets/chevron-right-solid.svg" alt="更多輸入選項" class="w-5 h-4" />
     </div>
-    <input type="text" class="
+    <input type="text" style="max-width:calc(100% - 1.25rem - 1.25rem - 1.5rem);" class="
         grow
         rounded-full
         focus:outline-none focus:drop-shadow-ring-white
@@ -36,7 +52,7 @@ function sendMsg() {
         px-3
         py-0.5
         mx-3
-      " @focus="isTyping = true" @focusout="isTyping = false" v-model="msg" />
+      " @focus="isTyping = true" @focusout="isTyping = false" @keyup.enter="sendMsg()" v-model="msg" />
     <button @click="sendMsg()">
       <img src="../assets/paper-plane-regular.svg" alt="傳送" class="w-5" />
     </button>
