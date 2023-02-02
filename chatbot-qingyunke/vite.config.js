@@ -40,14 +40,18 @@ export default ({
     server: {
       proxy: {
         '/api': {
-          target: 'http://api.qingyunke.com/api.php',
+          // target: 'http://api.qingyunke.com/api.php',
+          target: 'http://localhost:8000/chatbotapitest/api.php',
+          // target: 'https://chatbot-qingyunke.great-site.net/api.php',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
           secure: false,
           ws: true
         },
         '/convert': {
-          target: 'http://api.zhconvert.org/convert',
+          target: 'http://localhost:8000/chatbotapitest/convert.php',
+          // target: 'http://api.qingyunke.com/api.php',
+          // target: 'https://chatbot-qingyunke.great-site.net/convert.php',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/convert/, ''),
           secure: false,

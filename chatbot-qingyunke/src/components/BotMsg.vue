@@ -8,25 +8,30 @@ const msgBefore = `
 </svg>
 `;
 defineProps({
-    isStart: Boolean,
-    msg: String
+  isStart: Boolean,
+  msg: String,
 });
 </script>
 
 <template>
-    <div class="mx-4">
-        <div v-show="isStart"
-            class="absolute mr-2.5 w-10 h-10 bg-teal-400 bg-8 bg-center bg-no-repeat bg-robot-head rounded-full drop-shadow-ring-dark">
-        </div>
-        <div class="h-fit ml-12 relative">
-            <div class="absolute -top-2">
-                <div v-html="msgBefore" class="mt-4 w-4 fill-white drop-shadow-ring-dark absolute"></div>
-                <div v-html="msgBefore" class="mt-4 w-4 fill-white absolute z-10"></div>
-            </div>
-            <div
-                class="bg-white md:max-w-3/4 max-w-full w-fit ml-4 mt-4 h-auto min-h-[2.4rem] drop-shadow-ring-dark px-4 py-2 rounded-lg">
-                {{ msg }}
-            </div>
-        </div>
+  <div class="mx-4">
+    <div
+      v-show="isStart"
+      class="absolute mr-2.5 w-10 h-10 bg-teal-400 bg-8 bg-center bg-no-repeat bg-robot-head rounded-full drop-shadow-ring-dark"
+    ></div>
+    <div class="h-fit ml-12 relative">
+      <div class="absolute -top-2">
+        <div
+          v-html="msgBefore"
+          class="mt-4 w-4 fill-white drop-shadow-ring-dark absolute"
+        ></div>
+        <div v-html="msgBefore" class="mt-4 w-4 fill-white absolute z-10"></div>
+      </div>
+      <div
+        class="bg-white md:max-w-3/4 max-w-full w-fit ml-4 mt-4 h-auto min-h-[2.4rem] drop-shadow-ring-dark px-4 py-2 rounded-lg"
+      >
+        <div v-html="msg"></div>
+      </div>
     </div>
+  </div>
 </template>

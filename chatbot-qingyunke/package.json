@@ -13,6 +13,7 @@
     "mdb-ui-kit": "^6.1.0",
     "tw-elements": "^1.0.0-alpha13",
     "typescript": "^4.9.4",
+    "vh-for-mobile": "^1.0.1",
     "vue": "^3.2.45",
     "vue-axios": "^3.5.2"
   },
