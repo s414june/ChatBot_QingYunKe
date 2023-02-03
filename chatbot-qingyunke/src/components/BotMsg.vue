@@ -9,7 +9,6 @@ const msgBefore = `
 `;
 defineProps({
   isStart: Boolean,
-  msg: String,
 });
 </script>
 
@@ -30,7 +29,9 @@ defineProps({
       <div
         class="bg-white md:max-w-3/4 max-w-full w-fit ml-4 mt-4 h-auto min-h-[2.4rem] drop-shadow-ring-dark px-4 py-2 rounded-lg"
       >
-        <div v-html="msg"></div>
+        <div>
+          <slot></slot>
+        </div>
       </div>
     </div>
   </div>

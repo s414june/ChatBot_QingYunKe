@@ -2,11 +2,11 @@
 import { ref } from "vue";
 const isTyping = ref(false);
 const msg = ref("");
-const emit = defineEmits(["sendMsg", "setMobileVh"]);
-function sendMsg() {
+const emit = defineEmits(["loadMsg", "setMobileVh"]);
+function loadMsg() {
   let thisMsg = msg.value;
   msg.value = "";
-  emit("sendMsg", thisMsg);
+  emit("loadMsg", thisMsg);
 }
 const nowFontSizeIndex = ref(0);
 const fontSizeList = ["1rem", "1.2rem", "1.5rem", "1.8rem"];
@@ -42,10 +42,10 @@ function changeFontSize() {
       class="grow rounded-full focus:outline-none focus:drop-shadow-ring-white text-base px-3 py-0.5 mx-3"
       @focus="isTyping = true"
       @focusout="isTyping = false"
-      @keyup.enter="sendMsg()"
+      @keyup.enter="loadMsg()"
       v-model="msg"
     />
-    <button @click="sendMsg()">
+    <button @click="loadMsg()">
       <img src="../assets/paper-plane-regular.svg" alt="傳送" class="w-5" />
     </button>
   </div>
