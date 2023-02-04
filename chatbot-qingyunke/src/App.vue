@@ -4,12 +4,13 @@ import Footer from "./components/Footer.vue";
 import BotMsg from "./components/BotMsg.vue";
 import UserMsg from "./components/UserMsg.vue";
 import Loading from "./components/Loading.vue";
-import { getCurrentInstance, ref, onMounted, createApp, watch, reactive } from "vue";
+import { setMobileVh } from "./composable/useScript";
+import { getCurrentInstance, ref, onMounted, watch, shallowRef } from "vue";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const isLoading = ref(false);
-const saying = ref("");
 
-const textDatas = reactive([
+const textDatas = shallowRef([
   {
     isStart: true,
     msg: "哈囉~跟我說說話吧！",
@@ -17,86 +18,132 @@ const textDatas = reactive([
   },
 ]);
 
+const isTyping = ref(true);
+
 let { proxy } = getCurrentInstance();
 
-const loadMsg = async (msg) => {
-  if (msg.trim() === "") return;
-  appendUserMsg(msg);
-  fecthBotResponse(msg);
-};
+const inputIconWidthData = ref({
+  istype: 0,
+  notype: 0,
+});
 
 onMounted(() => {
   setMobileVh();
   window.addEventListener("resize", () => {
     setMobileVh();
   });
-  let LoadingMsg = createApp(BotMsg);
-  console.log(LoadingMsg);
-  LoadingMsg.mount("#LoadingMsg");
+  isTyping.value = false;
 });
-// onUpdated(() => {
-//   let main = document.getElementById("main");
-//   main.scrollTop = main.scrollHeight;
-// });
+
 watch(
-  saying,
+  [textDatas, isLoading],
   () => {
     scrollToBottom();
+    const loadingDomShow = waitLoadingDomShow();
+    loadingDomShow.then(() => {
+      scrollToBottom();
+    });
   },
   {
     //updated後才執行
     flush: "post",
   }
 );
-function setMobileVh() {
-  let windowsVH = window.innerHeight / 100;
-  document.querySelector("body").style.setProperty("--vh", windowsVH + "px");
+
+const loadMsg = async (msg) => {
+  appendUserMsg(msg);
+  sendBotAndTanslateApi(msg);
+};
+
+const reLoadBotRes = (msg) => {
+  isLoading.value = true;
+  textDatas.value.pop();
+  sendBotAndTanslateApi(msg);
+};
+
+function sendBotAndTanslateApi(msg) {
+  const getBot = fecthBotResText(msg);
+  getBot
+    .then((botText: String) => {
+      const getTaiwanText = fetchTranslateToTaiwan(botText);
+      doGetTaiwanText(getTaiwanText);
+    })
+    .catch((errMsg: String) => {
+      console.error(errMsg);
+      showError(errMsg);
+    });
+
+  function doGetTaiwanText(getTaiwanText) {
+    getTaiwanText
+      .then((taiwanText) => {
+        appendBotMsg(taiwanText);
+      })
+      .catch((errMsg) => {
+        console.error(errMsg);
+        showError(errMsg);
+      });
+  }
 }
+
+function waitLoadingDomShow() {
+  let loadingElment = document.querySelector("#LoadingBlock").children[0] as HTMLElement;
+  return new Promise((res, rej) => {
+    let isLoadingDomShow = loadingElment.style.display === "";
+    setTimeout(() => {
+      isLoadingDomShow = loadingElment.style.display === "";
+      if (isLoadingDomShow) {
+        res("");
+      }
+    }, 0);
+  });
+}
+
 function scrollToBottom() {
   let main = document.getElementById("main");
   if (!main) return;
   main.scrollTop = main.scrollHeight;
 }
 
-function fecthBotResponse(msg) {
-  saying.value = "bot";
-  proxy.$http
-    .get(import.meta.env.VITE_API_PATH, {
-      params: {
-        key: "free",
-        msg: msg,
-      },
-      headers: {},
-    })
-    .then(function (res) {
-      let botText = getBotText(res);
-      showBotTextOrTanslate(botText);
-    })
-    .catch(function (err) {
-      console.error(err);
-      let botText = "ERROR";
-      showBotTextOrTanslate(botText);
-    });
+async function fecthBotResText(msg): Promise<String> {
+  const promise = new Promise<String>((res, rej) => {
+    proxy.$http
+      .get(import.meta.env.VITE_API_PATH, {
+        params: {
+          key: "free",
+          msg: msg,
+        },
+        headers: {},
+      })
+      .then(function (_res) {
+        let botText = getBotText(_res);
+        res(botText);
+      })
+      .catch(function (err) {
+        rej(err);
+      });
+  });
+  return promise;
 }
 
-function fetchTranslateToTaiwan(text) {
-  proxy.$http
-    .get(import.meta.env.VITE_CONVERT_PATH, {
-      params: {
-        converter: "Taiwan",
-        text: text,
-      },
-      headers: {},
-    })
-    .then(function (res) {
-      let taiwanText = getTaiwanText(res);
-      showTaiwanText(taiwanText);
-    })
-    .catch(function (err) {
-      console.error(err);
-      let taiwanText = "ERROR";
-      showTaiwanText(taiwanText);
-    });
+async function fetchTranslateToTaiwan(text): Promise<String> {
+  const promise = new Promise<String>((res, rej) => {
+    proxy.$http
+      .get(import.meta.env.VITE_CONVERT_PATH, {
+        params: {
+          converter: "Taiwan",
+          text: text,
+        },
+        headers: {},
+      })
+      .then(function (_res) {
+        let taiwanText = getTaiwanText(_res);
+        res(taiwanText);
+      })
+      .catch(function (err) {
+        rej(err);
+      });
+  });
+  return promise;
 }
 
 function getBotText(res) {
@@ -104,13 +151,11 @@ function getBotText(res) {
   let botText = "";
   const SUCCESS_CODE = 0;
   if (data == null) {
-    botText = "NULL";
-    return botText;
+    throw new Error("NULL");
   }
   let result = data.result;
   if (result === SUCCESS_CODE) botText = data.content;
-  else botText = "ERROR";
-
+  else throw new Error("ERROR");
   return botText;
 }
 
@@ -121,26 +166,19 @@ function getTaiwanText(res) {
   if (data.code === SUCCESS_CODE) {
     taiwanText = data.data.text;
   } else {
-    console.error(data.msg);
-    taiwanText = "ERROR";
+    throw new Error("ERROR");
   }
   return taiwanText;
 }
 
-function showBotTextOrTanslate(text: String) {
+function showError(text: String) {
   if (text === "NULL") return appendBotMsg("不好意思，請再說一次");
-  if (text === "ERROR") return appendBotMsg("系統異常，請稍候再試");
-  fetchTranslateToTaiwan(text);
+  else if (text === "ERROR") return appendBotMsg("系統異常，請稍候再試");
+  else return appendBotMsg("系統異常，請稍候再試");
 }
 
-function showTaiwanText(text: String) {
-  if (text === "NULL") return appendBotMsg("繁化姬無資料");
-  if (text === "ERROR") return appendBotMsg("繁化姬系統異常");
-  appendBotMsg(text);
-}
 function appendUserMsg(msg) {
-  saying.value = "user";
-  textDatas.push({
+  textDatas.value.push({
     isStart: true,
     msg: msg,
     component: UserMsg,
@@ -149,20 +187,19 @@ function appendUserMsg(msg) {
 }
 
 function appendBotMsg(msg) {
-  textDatas.push({
+  textDatas.value.push({
     isStart: true,
     msg: msg,
     component: BotMsg,
   });
   isLoading.value = false;
-  saying.value = "";
 }
 </script>
 
 <template>
   <div class="flex flex-col h-[calc(var(--vh)*100)] bg-slate-200 overflow-hidden">
     <div>
-      <Header title="聊天機器人"></Header>
+      <Header title="[青雲客+繁化姬]聊天機器人"></Header>
     </div>
     <div id="main" class="grow w-full overflow-auto relative pb-4">
       <div v-for="text in textDatas">
@@ -170,14 +207,15 @@ function appendBotMsg(msg) {
           {{ text.msg }}
         </component>
       </div>
-      <div v-show="isLoading">
-        <BotMsg :isStart="true">
+      <div id="LoadingBlock" class="h-fit">
+        <BotMsg :isStart="true" v-show="isLoading">
           <Loading></Loading>
         </BotMsg>
       </div>
     </div>
     <div>
-      <Footer @loadMsg="loadMsg" @setMobileVh="setMobileVh"></Footer>
+      <Footer @loadMsg="loadMsg" @reLoadBotRes="reLoadBotRes" :isLoading="isLoading">
+      </Footer>
     </div>
   </div>
 </template>

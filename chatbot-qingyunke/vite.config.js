@@ -59,6 +59,9 @@ export default ({
         }
       }
     },
-    base: process.env.VITE_ROOT_PATH
+    base: process.env.VITE_ROOT_PATH,
+    resolve: {
+      extensions: ['.ts','.js']
+    }
   });
 }

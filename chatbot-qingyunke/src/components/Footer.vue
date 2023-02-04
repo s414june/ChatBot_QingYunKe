@@ -1,15 +1,30 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, toRefs, onMounted } from "vue";
+import { setMobileVh } from "../composable/useScript";
+const props = defineProps({
+  isLoading: Boolean,
+});
+const { isLoading } = toRefs(props);
 const isTyping = ref(false);
+const preMsg = ref("");
 const msg = ref("");
-const emit = defineEmits(["loadMsg", "setMobileVh"]);
-function loadMsg() {
-  let thisMsg = msg.value;
-  msg.value = "";
-  emit("loadMsg", thisMsg);
-}
+const emit = defineEmits(["loadMsg", "reLoadBotRes"]);
+const loadingDisable = ref({ "opacity-50": isLoading, "duration-500": true });
 const nowFontSizeIndex = ref(0);
 const fontSizeList = ["1rem", "1.2rem", "1.5rem", "1.8rem"];
+
+function loadMsg() {
+  if (isLoading.value) return;
+  if (msg.value.trim() === "") return;
+  emit("loadMsg", msg.value);
+  preMsg.value = msg.value;
+  msg.value = "";
+}
+function reLoadBotRes() {
+  if (isLoading.value) return;
+  if (preMsg.value.trim() === "") return;
+  emit("reLoadBotRes", preMsg.value);
+}
 function changeFontSize() {
   if (nowFontSizeIndex.value >= fontSizeList.length - 1) nowFontSizeIndex.value = 0;
   else nowFontSizeIndex.value++;
@@ -17,7 +32,11 @@ function changeFontSize() {
   document
     .querySelector("body")
     .setAttribute("style", "font-size:" + nowStyleValue + ";");
-  emit("setMobileVh");
+  setMobileVh();
+}
+function changeIsTypingState(isTypingValue) {
+  isTyping.value = isTypingValue;
+  setMobileVh();
 }
 </script>
 
@@ -25,28 +44,60 @@ function changeFontSize() {
   <div
     class="h-14 bg-gradient-to-r from-blue-400 to-teal-500 py-3 flex text-center px-3 items-center"
   >
-    <div v-show="!isTyping">
-      <img
-        src="../assets/font-size-selfdesign.svg"
-        alt="字體大小變化"
-        class="w-6"
-        @click="changeFontSize()"
-      />
-    </div>
-    <div v-show="isTyping" @click="isTyping = false">
-      <img src="../assets/chevron-right-solid.svg" alt="更多輸入選項" class="w-5 h-4" />
+    <div id="LeftIconPlace">
+      <div
+        v-show="!isTyping"
+        class="grid grid-flow-col gap-3 justify-center content-center"
+      >
+        <div class="flex items-center">
+          <img
+            src="../assets/font-size-selfdesign.svg"
+            alt="字體大小變化"
+            class="w-7"
+            @click="changeFontSize()"
+          />
+        </div>
+        <div class="flex items-center" :class="loadingDisable">
+          <font-awesome-icon
+            icon="fa-solid fa-arrows-rotate"
+            class="text-white"
+            size="lg"
+            @click="reLoadBotRes()"
+          />
+        </div>
+      </div>
+      <div v-show="isTyping" @click="isTyping = false">
+        <div class="flex items-center">
+          <font-awesome-icon
+            icon="fa-solid fa-chevron-right"
+            class="text-white"
+            size="lg"
+          />
+        </div>
+      </div>
     </div>
     <input
       type="text"
-      style="max-width: calc(100% - 1.25rem - 1.25rem - 1.5rem)"
       class="grow rounded-full focus:outline-none focus:drop-shadow-ring-white text-base px-3 py-0.5 mx-3"
-      @focus="isTyping = true"
-      @focusout="isTyping = false"
+      @focus="changeIsTypingState(true)"
+      @focusout="changeIsTypingState(false)"
       @keyup.enter="loadMsg()"
       v-model="msg"
     />
-    <button @click="loadMsg()">
-      <img src="../assets/paper-plane-regular.svg" alt="傳送" class="w-5" />
-    </button>
+    <div id="RightIconPlace">
+      <button @click="loadMsg()">
+        <!-- <img src="../assets/paper-plane-regular.svg" alt="傳送" class="w-5" /> -->
+        <div>
+          <div class="flex items-center" :class="loadingDisable">
+            <font-awesome-icon
+              icon="fa-regular fa-paper-plane"
+              class="text-white"
+              size="lg"
+            />
+          </div>
+        </div>
+        <div></div>
+      </button>
+    </div>
   </div>
 </template>
