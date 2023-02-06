@@ -9,6 +9,7 @@ import { getCurrentInstance, ref, onMounted, watch, shallowRef } from "vue";
 import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const isLoading = ref(false);
+const errMsg = ref("");
 
 const textDatas = shallowRef([
   {
@@ -51,11 +52,13 @@ watch(
 );
 
 const loadMsg = async (msg) => {
+  cleanErrMsg();
   appendUserMsg(msg);
   sendBotAndTanslateApi(msg);
 };
 
 const reLoadBotRes = (msg) => {
+  cleanErrMsg();
   isLoading.value = true;
   textDatas.value.pop();
   sendBotAndTanslateApi(msg);
@@ -68,9 +71,10 @@ function sendBotAndTanslateApi(msg) {
       const getTaiwanText = fetchTranslateToTaiwan(botText);
       doGetTaiwanText(getTaiwanText);
     })
-    .catch((errMsg: String) => {
-      console.error(errMsg);
-      showError(errMsg);
+    .catch((_errMsg: String) => {
+      console.error(_errMsg);
+      showError(_errMsg);
+      isLoading.value = false;
     });
 
   function doGetTaiwanText(getTaiwanText) {
@@ -78,9 +82,10 @@ function sendBotAndTanslateApi(msg) {
       .then((taiwanText) => {
         appendBotMsg(taiwanText);
       })
-      .catch((errMsg) => {
-        console.error(errMsg);
-        showError(errMsg);
+      .catch((_errMsg) => {
+        console.error(_errMsg);
+        showError(_errMsg);
+        isLoading.value = false;
       });
   }
 }
@@ -171,10 +176,18 @@ function getTaiwanText(res) {
   return taiwanText;
 }
 
-function showError(text: String) {
-  if (text === "NULL") return appendBotMsg("不好意思，請再說一次");
-  else if (text === "ERROR") return appendBotMsg("系統異常，請稍候再試");
-  else return appendBotMsg("系統異常，請稍候再試");
+function showError(_errMsg: String) {
+  if (_errMsg === "NULL") return showErrMsg("不好意思，請再說一次");
+  if (_errMsg === "ERROR") return showErrMsg("系統異常，請稍候再試");
+  else return showErrMsg("系統異常，請稍候再試");
+}
+
+function cleanErrMsg() {
+  errMsg.value = "";
+}
+
+function showErrMsg(text) {
+  errMsg.value = text;
 }
 
 function appendUserMsg(msg) {
@@ -202,7 +215,7 @@ function appendBotMsg(msg) {
       <Header title="[青雲客+繁化姬]聊天機器人"></Header>
     </div>
     <div id="main" class="grow w-full overflow-auto relative pb-4">
-      <div v-for="text in textDatas">
+      <div v-for="(text, index) in textDatas" :key="index">
         <component :isStart="text.isStart" :is="text.component">
           {{ text.msg }}
         </component>
@@ -214,7 +227,12 @@ function appendBotMsg(msg) {
       </div>
     </div>
     <div>
-      <Footer @loadMsg="loadMsg" @reLoadBotRes="reLoadBotRes" :isLoading="isLoading">
+      <Footer
+        @loadMsg="loadMsg"
+        @reLoadBotRes="reLoadBotRes"
+        :isLoading="isLoading"
+        :errMsg="errMsg"
+      >
       </Footer>
     </div>
   </div>
