@@ -34,7 +34,7 @@
 }
 
 @keyframes loadingC {
-  0 {
+  0% {
     transform: translate(0, 0);
     opacity: 1;
   }
