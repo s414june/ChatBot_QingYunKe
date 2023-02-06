@@ -34,12 +34,14 @@ const infoClass = ref({
       此聊天機器人使用了<a
         href="http://api.qingyunke.com/"
         class="text-cyan-500 underline decoration-solid"
+        target="_blank"
         >青雲客</a
       >進行機器人回應的串接，
       <br />
       並使用<a
         href="https://docs.zhconvert.org/"
         class="text-cyan-500 underline decoration-solid"
+        target="_blank"
         >繁化姬</a
       >進行簡繁轉換。
       <br />
@@ -52,6 +54,7 @@ const infoClass = ref({
       <a
         href="https://github.com/s414june/ChatBot_QingYunKe"
         class="text-cyan-500 underline decoration-solid"
+        target="_blank"
         >瀏覽專案</a
       >
     </div>
