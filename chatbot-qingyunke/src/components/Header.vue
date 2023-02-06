@@ -49,7 +49,9 @@ const infoClass = ref({
       <font-awesome-icon icon="fa-solid fa-face-smile-wink" class="mx-1" />
       開發者：青蛙
       <font-awesome-icon icon="fa-brands fa-github" class="mx-1 ml-5" />
-      <a href="http://api.qingyunke.com/" class="text-cyan-500 underline decoration-solid"
+      <a
+        href="https://github.com/s414june/ChatBot_QingYunKe"
+        class="text-cyan-500 underline decoration-solid"
         >瀏覽專案</a
       >
     </div>
