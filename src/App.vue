@@ -6,7 +6,6 @@ import UserMsg from "./components/UserMsg.vue";
 import Loading from "./components/Loading.vue";
 import { setMobileVh } from "./composable/useScript";
 import { getCurrentInstance, ref, onMounted, watch, shallowRef } from "vue";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const isLoading = ref(false);
 const errMsg = ref("");
