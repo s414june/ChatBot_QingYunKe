@@ -108,6 +108,24 @@ function scrollToBottom() {
   main.scrollTop = main.scrollHeight;
 }
 
+async function fecthWeatherTest(): Promise<String> {
+  const promise = new Promise<String>((res, rej) => {
+    proxy.$http
+      .get(
+        "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-AEE024E9-A102-4069-8272-A96024102012",
+        {}
+      )
+      .then(function (_res) {
+        let r = _res.toString();
+        res(r);
+      })
+      .catch(function (err) {
+        rej(err);
+      });
+  });
+  return promise;
+}
+
 async function fecthBotResText(msg): Promise<String> {
   const promise = new Promise<String>((res, rej) => {
     proxy.$http

@@ -1,13 +1,16 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 defineProps({
   title: String,
 });
 const isOpenInfo = ref(false);
 const isCloseInfo = ref(true);
-const infoClass = ref({
-  "!top-0 mt-14": isOpenInfo,
-});
+// const infoClass = ref({
+//   "-translate-y-full": isOpenInfo,
+// });
+const infoClass = computed(() => ({
+  "-translate-y-full": !isOpenInfo.value,
+}));
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const infoClass = ref({
     </div>
     <div
       :class="infoClass"
-      class="text-base bg-white/75 w-full p-3 text-slate-400 shadow text-center absolute z-20 duration-500 h-fit bottom-0 -top-36"
+      class="text-base bg-white/90 w-full p-3 text-slate-400 shadow text-center absolute z-20 duration-500 h-fit"
     >
       您好，歡迎使用這個聊天機器人~
       <br />
