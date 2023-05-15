@@ -15,6 +15,7 @@ const textDatas = shallowRef([
     isStart: true,
     msg: "哈囉~跟我說說話吧！",
     component: BotMsg,
+    isBotMsg: true
   },
 ]);
 
@@ -53,38 +54,60 @@ watch(
 const loadMsg = async (msg) => {
   cleanErrMsg();
   appendUserMsg(msg);
-  sendBotAndTanslateApi(msg);
+  let hasHidBotMsg = false;
+  sendBotAndTanslateApi(msg, hasHidBotMsg);
 };
 
 const reLoadBotRes = (msg) => {
   cleanErrMsg();
   isLoading.value = true;
-  textDatas.value.pop();
-  sendBotAndTanslateApi(msg);
+  // textDatas.value.pop();
+  //隱藏最後一個機器人回應
+  let msgLength = textDatas.value.length;
+  if (textDatas.value[msgLength - 1].isBotMsg) {
+    textDatas.value[msgLength - 1].isStart = false;
+  }
+  let hasHidBotMsg = true;
+  sendBotAndTanslateApi(msg, hasHidBotMsg);
 };
 
-function sendBotAndTanslateApi(msg) {
+function sendBotAndTanslateApi(msg, hasHidBotMsg) {
   const getBot = fecthBotResText(msg);
   getBot
     .then((botText: String) => {
       const getTaiwanText = fetchTranslateToTaiwan(botText);
-      doGetTaiwanText(getTaiwanText);
+      doGetTaiwanText(getTaiwanText, hasHidBotMsg);
     })
     .catch((_errMsg: String) => {
       console.error(_errMsg);
       showError(_errMsg);
       isLoading.value = false;
+      //api回傳失敗，再次顯示最後一個機器人回應
+      let msgLength = textDatas.value.length;
+      if (textDatas.value[msgLength - 1].isBotMsg) {
+        textDatas.value[msgLength - 1].isStart = true;
+      }
     });
 
-  function doGetTaiwanText(getTaiwanText) {
+  function doGetTaiwanText(getTaiwanText, hasHidBotMsg) {
     getTaiwanText
       .then((taiwanText) => {
+        //確定api回傳成功，把前一個機器人回應刪除
+        let msgLength = textDatas.value.length;
+        if (hasHidBotMsg && textDatas.value[msgLength - 1].isBotMsg) {
+          textDatas.value.pop();
+        }
         appendBotMsg(taiwanText);
       })
       .catch((_errMsg) => {
         console.error(_errMsg);
         showError(_errMsg);
         isLoading.value = false;
+        //api回傳失敗，再次顯示最後一個機器人回應
+        let msgLength = textDatas.value.length;
+        if (textDatas.value[msgLength - 1].isBotMsg) {
+          textDatas.value[msgLength - 1].isStart = true;
+        }
       });
   }
 }
@@ -212,6 +235,7 @@ function appendUserMsg(msg) {
     isStart: true,
     msg: msg,
     component: UserMsg,
+    isBotMsg: false
   });
   isLoading.value = true;
 }
@@ -221,6 +245,7 @@ function appendBotMsg(msg) {
     isStart: true,
     msg: msg,
     component: BotMsg,
+    isBotMsg: true
   });
   isLoading.value = false;
 }
@@ -244,12 +269,7 @@ function appendBotMsg(msg) {
       </div>
     </div>
     <div>
-      <Footer
-        @loadMsg="loadMsg"
-        @reLoadBotRes="reLoadBotRes"
-        :isLoading="isLoading"
-        :errMsg="errMsg"
-      >
+      <Footer @loadMsg="loadMsg" @reLoadBotRes="reLoadBotRes" :isLoading="isLoading" :errMsg="errMsg">
       </Footer>
     </div>
   </div>
