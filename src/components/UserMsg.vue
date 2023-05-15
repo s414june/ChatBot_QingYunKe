@@ -9,6 +9,7 @@ const msgBefore = `
 `;
 defineProps({
   isStart: Boolean,
+  isShow: Boolean
 });
 </script>
 
@@ -16,19 +17,12 @@ defineProps({
   <div class="mx-4">
     <div class="h-fit relative w-full flex justify-end">
       <div
-        class="md:max-w-3/4 max-w-full mt-4 text-white bg-cyan-500 z-10 mr-4 w-fit h-auto min-h-[2.4rem] drop-shadow-ring-dark px-4 py-2 rounded-lg"
-      >
+        class="md:max-w-3/4 max-w-full mt-4 text-white bg-cyan-500 z-10 mr-4 w-fit h-auto min-h-[2.4rem] drop-shadow-ring-dark px-4 py-2 rounded-lg">
         <slot></slot>
       </div>
       <div class="absolute -top-2 right-4">
-        <div
-          v-html="msgBefore"
-          class="-scale-x-1 mt-8 w-4 fill-cyan-500 drop-shadow-ring-dark absolute"
-        ></div>
-        <div
-          v-html="msgBefore"
-          class="-scale-x-1 mt-8 w-4 fill-cyan-500 absolute z-10"
-        ></div>
+        <div v-html="msgBefore" class="-scale-x-1 mt-8 w-4 fill-cyan-500 drop-shadow-ring-dark absolute"></div>
+        <div v-html="msgBefore" class="-scale-x-1 mt-8 w-4 fill-cyan-500 absolute z-10"></div>
       </div>
     </div>
   </div>

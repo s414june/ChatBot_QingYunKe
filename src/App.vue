@@ -13,6 +13,7 @@ const errMsg = ref("");
 const textDatas = shallowRef([
   {
     isStart: true,
+    isShow:true,
     msg: "哈囉~跟我說說話吧！",
     component: BotMsg,
     isBotMsg: true
@@ -65,7 +66,7 @@ const reLoadBotRes = (msg) => {
   //隱藏最後一個機器人回應
   let msgLength = textDatas.value.length;
   if (textDatas.value[msgLength - 1].isBotMsg) {
-    textDatas.value[msgLength - 1].isStart = false;
+    textDatas.value[msgLength - 1].isShow = false;
   }
   let hasHidBotMsg = true;
   sendBotAndTanslateApi(msg, hasHidBotMsg);
@@ -85,7 +86,7 @@ function sendBotAndTanslateApi(msg, hasHidBotMsg) {
       //api回傳失敗，再次顯示最後一個機器人回應
       let msgLength = textDatas.value.length;
       if (textDatas.value[msgLength - 1].isBotMsg) {
-        textDatas.value[msgLength - 1].isStart = true;
+        textDatas.value[msgLength - 1].isShow = true;
       }
     });
 
@@ -106,7 +107,7 @@ function sendBotAndTanslateApi(msg, hasHidBotMsg) {
         //api回傳失敗，再次顯示最後一個機器人回應
         let msgLength = textDatas.value.length;
         if (textDatas.value[msgLength - 1].isBotMsg) {
-          textDatas.value[msgLength - 1].isStart = true;
+          textDatas.value[msgLength - 1].isShow = true;
         }
       });
   }
@@ -233,6 +234,7 @@ function showErrMsg(text) {
 function appendUserMsg(msg) {
   textDatas.value.push({
     isStart: true,
+    isShow:true,
     msg: msg,
     component: UserMsg,
     isBotMsg: false
@@ -243,6 +245,7 @@ function appendUserMsg(msg) {
 function appendBotMsg(msg) {
   textDatas.value.push({
     isStart: true,
+    isShow:true,
     msg: msg,
     component: BotMsg,
     isBotMsg: true
@@ -263,7 +266,7 @@ function appendBotMsg(msg) {
         </component>
       </div>
       <div id="LoadingBlock" class="h-fit">
-        <BotMsg :isStart="true" v-show="isLoading">
+        <BotMsg :isStart="true" v-show="isLoading" :isShow="true">
           <Loading></Loading>
         </BotMsg>
       </div>
