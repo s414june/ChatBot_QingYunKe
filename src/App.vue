@@ -261,12 +261,12 @@ function appendBotMsg(msg) {
     </div>
     <div id="main" class="grow w-full overflow-auto relative pb-4">
       <div v-for="(text, index) in textDatas" :key="index">
-        <component :isStart="text.isStart" :is="text.component">
+        <component :isStart="text.isStart" :is="text.component" :isShow="text.isShow">
           {{ text.msg }}
         </component>
       </div>
       <div id="LoadingBlock" class="h-fit">
-        <BotMsg :isStart="true" v-show="isLoading" :isShow="true">
+        <BotMsg :isStart="true" v-show="isLoading">
           <Loading></Loading>
         </BotMsg>
       </div>
