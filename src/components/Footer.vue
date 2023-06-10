@@ -87,7 +87,7 @@ function changeIsTypingState(isTypingValue) {
       </div>
       <input
         type="text"
-        class="grow rounded-full focus:outline-none focus:drop-shadow-ring-white text-base px-3 py-0.5 mx-3"
+        class="grow w-px rounded-full focus:outline-none focus:drop-shadow-ring-white text-base px-3 py-0.5 mx-3"
         @focus="changeIsTypingState(true)"
         @focusout="changeIsTypingState(false)"
         @keyup.enter="loadMsg()"
