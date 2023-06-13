@@ -4,7 +4,7 @@ import Footer from "./components/Footer.vue";
 import BotMsg from "./components/BotMsg.vue";
 import UserMsg from "./components/UserMsg.vue";
 import Loading from "./components/Loading.vue";
-import { setMobileVh } from "./composable/useScript";
+import { setMobileVh,viewportVhHandler } from "./composable/useScript";
 import { getCurrentInstance, ref, onMounted, watch, shallowRef } from "vue";
 
 const isLoading = ref(false);
@@ -30,10 +30,18 @@ const inputIconWidthData = ref({
 });
 
 onMounted(() => {
+  // setMobileVh();
+  // window.addEventListener("resize", () => {
+  //   setMobileVh();
+  // });
+  // document.querySelector("input").addEventListener("focus", () => {
+  //   setMobileVh();
+  // });
+  // document.querySelector("input").addEventListener("focusout", () => {
+  //   setMobileVh();
+  // });
   setMobileVh();
-  window.addEventListener("resize", () => {
-    setMobileVh();
-  });
+  visualViewport.addEventListener("resize",viewportVhHandler);
   isTyping.value = false;
 });
 
