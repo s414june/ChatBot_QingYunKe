@@ -1,0 +1,18 @@
+{
+    "name": "gslin/fly-test",
+    "autoload": {
+        "psr-4": {
+            "Gslin\\FlyTest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "YU CHIN WU",
+            "email": "s414june@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~8",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
